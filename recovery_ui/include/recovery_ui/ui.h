@@ -303,6 +303,8 @@ class RecoveryUI {
     sideload_auto_reboot_ = sar;
   }
 
+  virtual bool IsUsbConnected();
+
  protected:
   void EnqueueKey(int key_code);
   void EnqueueTouch(const Point& pos);
@@ -345,8 +347,6 @@ class RecoveryUI {
   int OnInputEvent(int fd, uint32_t epevents);
   void ProcessKey(int key_code, int updown);
   void TimeKey(int key_code, int count);
-
-  bool IsUsbConnected();
 
   bool InitScreensaver();
   void SetScreensaverState(ScreensaverState state);
