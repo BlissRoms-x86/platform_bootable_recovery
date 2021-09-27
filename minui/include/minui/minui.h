@@ -133,6 +133,7 @@ GRRotation gr_touch_rotation();
 
 void gr_flip();
 void gr_fb_blank(bool blank);
+void gr_fb_blank(bool blank, int index);
 
 // Clears entire surface to current color.
 void gr_clear();
