@@ -62,6 +62,7 @@
 
 using namespace std::chrono_literals;
 
+bool ask_to_ab_reboot(Device* device);
 bool ask_to_continue_unverified(Device* device);
 bool ask_to_continue_downgrade(Device* device);
 
@@ -362,6 +363,14 @@ static InstallResult TryUpdateBinary(Package* package, bool* wipe_cache,
     LOG(WARNING) << "This is SPL downgrade";
   }
 
+  static bool ab_package_installed = false;
+  if (ab_package_installed) {
+    if (ask_to_ab_reboot(ui->GetDevice())) {
+      Reboot("userrequested,recovery,ui");
+    }
+    return INSTALL_ERROR;
+  }
+
   if (package_is_ab) {
     CHECK(package->GetType() == PackageType::kFile);
   }
@@ -545,6 +554,12 @@ static InstallResult TryUpdateBinary(Package* package, bool* wipe_cache,
     return INSTALL_ERROR;
   } else {
     LOG(FATAL) << "Invalid status code " << status;
+  }
+  if (package_is_ab) {
+    ab_package_installed = true;
+    if (ask_to_ab_reboot(ui->GetDevice())) {
+      Reboot("userrequested,recovery,ui");
+    }
   }
 
   return INSTALL_SUCCESS;
