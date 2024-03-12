@@ -29,5 +29,9 @@ bool WipeCache(RecoveryUI* ui, const std::function<bool()>& confirm);
 // Returns true on success.
 bool WipeData(Device* device, bool convert_fbe);
 
+int removeDir(RecoveryUI* ui, const std::string path, bool skipParent);
+
+bool WipeDataDir(Device* device, bool skipParent);
+
 // Returns true on success.
 bool WipeSystem(RecoveryUI* ui, const std::function<bool()>& confirm);
