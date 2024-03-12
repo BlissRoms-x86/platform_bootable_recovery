@@ -64,7 +64,10 @@ endif
 LOCAL_REQUIRED_MODULES += \
     e2fsck.recovery \
     resize2fs.recovery \
-    tune2fs.recovery
+    tune2fs.recovery \
+    mkfs.ntfs.recovery \
+    mount.ntfs.recovery \
+    fsck.ntfs.recovery
 
 # On A/B devices recovery-persist reads the recovery related file from the persist storage and
 # copies them into /data/misc/recovery. Then, for both A/B and non-A/B devices, recovery-persist
