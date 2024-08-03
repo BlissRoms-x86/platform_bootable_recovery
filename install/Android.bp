@@ -107,6 +107,7 @@ cc_library_static {
         "adb_install.cpp",
         "asn1_decoder.cpp",
         "fuse_install.cpp",
+        "virtiofs_install.cpp",
         "install.cpp",
         "package.cpp",
         "snapshot_utils.cpp",
