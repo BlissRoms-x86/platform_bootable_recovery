@@ -21,11 +21,17 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <sys/stat.h>
 
 #include <android-base/logging.h>
 
 #include "otautil/boot_state.h"
 #include "recovery_ui/ui.h"
+
+static bool system_uses_uefi() {
+  struct stat info;
+  return (stat("/sys/firmware/efi", &info) == 0);
+}
 
 typedef std::pair<std::string, Device::BuiltinAction> menu_action_t;
 
@@ -38,18 +44,26 @@ static std::vector<menu_action_t> g_main_actions{
 };
 
 static std::vector<std::string> g_advanced_header{ "Advanced options" };
-static std::vector<menu_action_t> g_advanced_actions{
-  { "Enter fastboot", Device::ENTER_FASTBOOT },
-  { "Reboot to bootloader", Device::REBOOT_BOOTLOADER },
-  { "Reboot to recovery", Device::REBOOT_RECOVERY },
-  { "Mount/unmount system", Device::MOUNT_SYSTEM },
-  { "View recovery logs", Device::VIEW_RECOVERY_LOGS },
-  { "Enable ADB", Device::ENABLE_ADB },
-  { "Run graphics test", Device::RUN_GRAPHICS_TEST },
-  { "Run locale test", Device::RUN_LOCALE_TEST },
-  { "Enter rescue", Device::ENTER_RESCUE },
-  { "Power off", Device::SHUTDOWN },
-};
+static std::vector<menu_action_t> get_advanced_actions() {
+  std::vector<menu_action_t> actions{
+    { "Enter fastboot", Device::ENTER_FASTBOOT },
+    { "Reboot to bootloader", Device::REBOOT_BOOTLOADER },
+    { "Reboot to recovery", Device::REBOOT_RECOVERY },
+    { "Mount/unmount system", Device::MOUNT_SYSTEM },
+    { "View recovery logs", Device::VIEW_RECOVERY_LOGS },
+    { "Enable ADB", Device::ENABLE_ADB },
+    { "Run graphics test", Device::RUN_GRAPHICS_TEST },
+    { "Run locale test", Device::RUN_LOCALE_TEST },
+    { "Enter rescue", Device::ENTER_RESCUE },
+    { "Power off", Device::SHUTDOWN },
+  };
+
+  if (system_uses_uefi()) {
+    actions.push_back({ "Reboot to UEFI Firmware Settings", Device::REBOOT_UEFI_SETTINGS });
+  }
+
+  return actions;
+}
 
 static std::vector<std::string> g_wipe_header{ "Factory reset" };
 static std::vector<menu_action_t> g_wipe_actions{
@@ -60,6 +74,7 @@ static std::vector<menu_action_t> g_wipe_actions{
 
 static std::vector<menu_action_t>* current_menu_ = &g_main_actions;
 static std::vector<std::string> g_menu_items;
+static std::vector<menu_action_t> g_advanced_actions = get_advanced_actions();
 
 static void PopulateMenuItems() {
   g_menu_items.clear();
