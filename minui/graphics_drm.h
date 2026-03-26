@@ -78,4 +78,7 @@ class MinuiBackendDrm : public MinuiBackend {
 
   int drm_fd{ -1 };
   DrmConnector active_display = DRM_MAIN;
+
+  void DropMaster() override;
+  void SetMaster() override;
 };

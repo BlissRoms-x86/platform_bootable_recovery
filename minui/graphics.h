@@ -42,6 +42,10 @@ class MinuiBackend {
 
   // Device cleanup when drawing is done.
   virtual ~MinuiBackend() {};
+
+  // Release/Acquire display ownership for VT switching
+  virtual void DropMaster() = 0;
+  virtual void SetMaster() = 0;
 };
 
 #endif  // _GRAPHICS_H_
